@@ -1,23 +1,65 @@
 Window.SetBackgroundTopColor (0.08627450980392157, 0.08627450980392157, 0.08627450980392157);           # Nice blue on top of the screen fading to
 Window.SetBackgroundBottomColor (0.08627450980392157, 0.08627450980392157, 0.08627450980392157);  # an equally nice brown on the bottom
 
-for (i = 0; i < 111; i++)
+
+# --- Load animation frames ---
+for (i = 1; i < {{NUMBER OF IMAGES IN SEQUENCE}}; i++)
   flyingman_image[i] = Image("progress-" + i + ".png");
+
+# Create the sprite that will hold the animation frames.
 flyingman_sprite = Sprite();
 
+# --- Center the animation on screen ---
+flyingman_sprite.SetX(Window.GetWidth() / 2 - flyingman_image[1].GetWidth() / 2);
+flyingman_sprite.SetY(Window.GetHeight() / 2 - flyingman_image[1].GetHeight() / 2);
 
-flyingman_sprite.SetX(Window.GetWidth() / 2 - flyingman_image[0].GetWidth() / 2); # Place in the centre
-flyingman_sprite.SetY(Window.GetHeight() / 2 - flyingman_image[0].GetHeight() / 2);
+# --- Animation state variables ---
+progress = 0;        # Tracks current frame number.
+frame_counter = 0;   # Used to slow down/speed up frame switching.
 
-progress = 0;
+boot_speed = 2;       # Boot animation speed (higher = slower).
+shutdown_speed = 2;   # Shutdown animation speed (higher = slower).
+animation_speed = boot_speed;  # Default to boot speed.
 
+# --- Define animation frame ranges ---
+wake_start = 0;    # First frame for boot "wake up" sequence.
+wake_end   = 111;  # Last frame for boot "wake up" sequence.
+sleep_start = 0;   # First frame for shutdown "sleep" sequence.
+sleep_end   = 111; # Last frame for shutdown "sleep" sequence.
+
+# --- Refresh callback function ---
 fun refresh_callback ()
-  {
-    flyingman_sprite.SetImage(flyingman_image[progress%111]);
-    progress++;
-  }
-  
-Plymouth.SetRefreshFunction (refresh_callback);
+{
+    frame_counter++;  # Increment frame counter each refresh.
+
+    if (frame_counter >= animation_speed)  # Only update when it's time.
+    { 
+        if (mode == "boot") {
+            # --- BOOT MODE ---
+            # Step 1: Play the wake up animation (frame range wake_start → wake_end).
+            if (progress < (wake_end - wake_start + 1)) {
+                flyingman_sprite.SetImage(
+                    flyingman_image[wake_start + (progress % (wake_end - wake_start + 1))]
+                );
+            } else {
+                # Step 2: After wake up, loop all frames (example uses 111).
+                flyingman_sprite.SetImage(
+                    flyingman_image[(1 + (progress % 111))]
+                );
+            }
+        }
+
+        # --- General frame update ---
+        flyingman_sprite.SetImage(
+            flyingman_image[Math.Int(progress / 3) % {{NUMBER OF FRAMES HERE}}]
+        );
+
+        progress++;        
+        frame_counter = 0; 
+    }
+}
+
+Plymouth.SetRefreshFunction(refresh_callback);
 
 
 #sudo update-alternatives --install /lib/plymouth/themes/default.plymouth default.plymouth /lib/plymouth/themes/mytheme/mytheme.plymouth 100
