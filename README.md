@@ -2,6 +2,7 @@
 ------------------------------------- 
 Credit lineage: 
 - Original Creator → krishnan793 (PlymouthTheme-Cat)
+
 Changes Summary:
 -loads animation frames, and controls
 -boot/shutdown sequences for Plymouth themes.
