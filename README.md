@@ -1,13 +1,13 @@
 # Plymouth Cat Animation Script 
-------------------------------------- 
+ 
 Credit lineage: 
 - Original Creator → krishnan793 (PlymouthTheme-Cat)
 
 Changes Summary:
--loads animation frames, and controls
--boot/shutdown sequences for Plymouth themes.
+- loads animation frames, and controls
+- boot/shutdown sequences for Plymouth themes.
 # How to Customize
--------------------------------------
+
 1. NUMBER OF IMAGES:
    - Replace {{NUMBER OF IMAGES IN SEQUENCE}} with total number of frames in your image sequence
 2. FRAME RANGES:
